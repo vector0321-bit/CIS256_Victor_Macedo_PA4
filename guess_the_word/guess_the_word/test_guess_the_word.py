@@ -37,3 +37,19 @@ def test_selected_word_from_predefine_list(monkeypatch, capsys):
     output = capsys.readouterr().out
     assert "Your guess is correct: banana" in output
 
+def test_correct_guess(monkeypatch, capsys):
+
+    monkeypatch.setattr(random, "choice", lambda options: "orange")
+
+    responses = iter(["o", "r", "a", "n", "g", "e", "n"])
+    monkeypatch.setattr(
+        "builtins.input", lambda prompt = "": next(responses)
+    )
+    
+    game_file = Path(__file__).with_name("guess_the_word.py")
+    runpy.run_path(str(game_file))
+
+    output = capsys.readouterr().out
+    assert "Correct guess." in output
+    assert "Your guess is correct: orange" in output
+

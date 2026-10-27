@@ -53,3 +53,21 @@ def test_correct_guess(monkeypatch, capsys):
     assert "Correct guess." in output
     assert "Your guess is correct: orange" in output
 
+def test_incorrect_guess(monkeypatch, capsys):
+    monkeypatch.setattr(random, "choice", lambda options: "orange")
+    
+    responses = iter(["x", "o", "r", "a", "n", "g", "e", "n"])
+    monkeypatch.setattr(
+        "builtins.input", lambda prompt="": next(responses)
+    )
+
+    game_file = Path(__file__).with_name("guess_the_word.py")
+    runpy.run_path(str(game_file))
+
+    output = capsys.readouterr().out
+
+    assert "Incorrect letter." in output
+
+    assert "Your guess is correct: orange" in output
+
+
